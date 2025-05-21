@@ -1,9 +1,11 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 
 export function middleware(req: NextRequest): NextResponse {
-  const auth = req.headers.get("authorization") || "";
-  const [_type, token] = auth.split(" ");
+  const auth = req.headers.get("authorization");
+  if (!auth) return unauthorized();
+
+  // ignore the first part (“Basic”) and grab the token
+  const [, token] = auth.split(" ");
   if (!token) return unauthorized();
 
   const [user, pass] = Buffer.from(token, "base64").toString().split(":");
@@ -19,13 +21,12 @@ export function middleware(req: NextRequest): NextResponse {
 }
 
 function unauthorized(): NextResponse {
-  return new Response("Authentication required", {
+  return new NextResponse("Authentication required", {
     status: 401,
     headers: { "WWW-Authenticate": 'Basic realm="Protected"' },
-  }) as unknown as NextResponse;
+  });
 }
 
-// Apply to every route except static files
 export const config = {
   matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };
