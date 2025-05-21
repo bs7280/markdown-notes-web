@@ -1,17 +1,13 @@
 "use client";
 
-import { useState } from "react";
-
 export function SearchBar({
   query,
   setQuery,
-  onToggleView,
-  onNewNote,
 }: {
   query: string;
   setQuery: (val: string) => void;
-  onToggleView?: () => void;
-  onNewNote?: () => void;
+  //onToggleView?: () => void;
+  //onNewNote?: () => void;
 }) {
   return (
     <div className="flex flex-col md:flex-row md:items-center md:gap-4 mb-4">

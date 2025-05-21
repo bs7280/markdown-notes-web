@@ -1,44 +1,68 @@
+// Public node type returned by the tree builder
 export type FileNode = {
+  /** The display name (last segment) */
   name: string;
-  path: string; // full path, e.g. "tmp/foo/foo.md"
+  /** Full path for linking, e.g. "tmp/foo/bar.md" */
+  path: string;
+  /** Optional array of child nodes (folders or files) */
   children?: FileNode[];
 };
 
-export function buildFileTree(paths: string[]): FileNode[] {
-  // 1. Build a nested map structure
-  const rootMap: Record<string, any> = {};
+// Internal node type used during tree construction
+interface InternalNode {
+  name: string;
+  path: string;
+  childrenMap: Map<string, InternalNode>;
+}
 
+/**
+ * Builds a nested file tree from a flat list of file paths.
+ * Folders are represented implicitly by their path segments.
+ */
+export function buildFileTree(paths: string[]): FileNode[] {
+  const rootMap = new Map<string, InternalNode>();
+
+  // Step 1: Populate the map hierarchy
   for (const fullPath of paths) {
     const parts = fullPath.split("/");
-    let current = rootMap;
-    let acc = "";
+    let currentMap = rootMap;
+    let accumulatedPath = "";
 
     for (let i = 0; i < parts.length; i++) {
-      const part = parts[i];
-      acc = acc ? `${acc}/${part}` : part;
+      const segment = parts[i];
+      accumulatedPath = accumulatedPath
+        ? `${accumulatedPath}/${segment}`
+        : segment;
 
-      if (!current[part]) {
-        current[part] = { name: part, path: acc, childrenMap: {} };
+      if (!currentMap.has(segment)) {
+        const node: InternalNode = {
+          name: segment,
+          path: accumulatedPath,
+          childrenMap: new Map<string, InternalNode>(),
+        };
+        currentMap.set(segment, node);
       }
 
-      // dive into childrenMap unless this is the leaf
-      if (i < parts.length - 1) {
-        current = current[part].childrenMap;
-      }
+      const node = currentMap.get(segment)!;
+      // Dive into children map for next segment
+      currentMap = node.childrenMap;
     }
   }
 
-  // 2. Convert maps → arrays of FileNode
-  function toTree(map: Record<string, any>): FileNode[] {
-    return Object.values(map).map((node: any) => {
-      const children = toTree(node.childrenMap);
-      return {
-        name: node.name,
-        path: node.path,
-        ...(children.length ? { children } : {}),
+  // Step 2: Convert the map hierarchy to FileNode[] recursively
+  function mapToTree(map: Map<string, InternalNode>): FileNode[] {
+    return Array.from(map.values()).map((internal) => {
+      const childNodes = mapToTree(internal.childrenMap);
+      const fileNode: FileNode = {
+        name: internal.name,
+        path: internal.path,
       };
+      if (childNodes.length > 0) {
+        fileNode.children = childNodes;
+      }
+      return fileNode;
     });
   }
 
-  return toTree(rootMap);
+  return mapToTree(rootMap);
 }

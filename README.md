@@ -25,7 +25,7 @@ If you want to easily get future updates to this project, fork this project into
 
 > [!NOTE]
 >
-> The reason for forking this project instead of using it directly -- vercel will clone a public repo into your account which makes it hard to get updates.
+> The reason for forking this project instead of using it directly -- vercel will clone a public repo into your account which makes it hard to get updates in the future.
 
 ## Step 2 - Create a personal access token
 

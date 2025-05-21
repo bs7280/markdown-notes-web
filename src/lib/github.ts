@@ -1,4 +1,5 @@
 import { Octokit } from "@octokit/rest";
+import type { RestEndpointMethodTypes } from "@octokit/rest";
 
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
@@ -33,20 +34,29 @@ export async function listMarkdownFiles(): Promise<string[]> {
   return mdFiles;
 }
 
-export async function getNote(filename: string) {
-  const res = await octokit.repos.getContent({
+export async function getNote(filename: string): Promise<{ content: string }> {
+  const response = await octokit.repos.getContent({
     owner,
     repo,
-    path: filename, // e.g., "movies.md"
+    path: filename,
     ref: mainBranch,
   });
 
-  const content = Buffer.from((res.data as any).content, "base64").toString(
-    "utf8"
-  );
+  // Get the raw data, which can be either a file or a directory
+  const data =
+    response.data as RestEndpointMethodTypes["repos"]["getContent"]["response"]["data"];
+
+  // Narrow to the file case
+  if (Array.isArray(data) || typeof data.content !== "string") {
+    throw new Error(
+      `Expected a file at ${filename}, but got a directory or missing content`
+    );
+  }
+
+  // Decode and return
+  const content = Buffer.from(data.content, "base64").toString("utf8");
   return { content };
 }
-
 export async function editNote(filename: string, newContent: string) {
   // Step 1: Get latest commit SHA of main branch
   const {

@@ -1,19 +1,17 @@
 import { getNote } from "@/lib/github";
 import NotePageWrapper from "./NotePageWrapper";
 
-export default async function Page(props: {
-  params: { slug: string[] | string };
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ slug: string | string[] }>;
 }) {
-  const params = await getParams(props);
+  // now params is a Promise, so we await it:
+  const { slug } = await params;
+  // normalize to an array of strings
+  const slugArray = Array.isArray(slug) ? slug : [slug];
+  const filename = decodeURIComponent(slugArray.join("/"));
 
-  const slug = Array.isArray(params.slug) ? params.slug : [params.slug];
-  const filename = decodeURIComponent(slug.join("/"));
   const { content } = await getNote(filename);
-
   return <NotePageWrapper filename={filename} initialContent={content} />;
-}
-
-// workaround to avoid warning in streaming contexts
-async function getParams(props: { params: { slug: string[] | string } }) {
-  return props.params;
 }

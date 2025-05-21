@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import Link from "next/link";
 import { buildFileTree } from "@/lib/fileTree";
 import { TreeView } from "@/components/TreeView";
 import { SearchBar } from "@/components/SearchBar";
@@ -33,12 +32,7 @@ export default function HomePage({ files }: { files: string[] }) {
         Obsidian Notes
       </h1>
 
-      <SearchBar
-        query={query}
-        setQuery={setQuery}
-        onToggleView={() => console.log("Toggle View")}
-        onNewNote={() => console.log("New Note")}
-      />
+      <SearchBar query={query} setQuery={setQuery} />
 
       <TreeView nodes={tree} />
     </div>

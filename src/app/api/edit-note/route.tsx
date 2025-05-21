@@ -14,8 +14,8 @@ export async function POST(req: Request) {
     const result = await editNote(filename, content);
 
     return NextResponse.json({ success: true, ...result });
-  } catch (err: any) {
-    console.error("Edit note error:", err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
