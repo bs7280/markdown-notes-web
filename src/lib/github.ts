@@ -24,7 +24,7 @@ export async function listMarkdownFiles(): Promise<string[]> {
     owner,
     repo,
     tree_sha: treeSha,
-    recursive: true,
+    recursive: "true",
   });
 
   // Step 3: filter for .md files only
@@ -42,18 +42,18 @@ export async function getNote(filename: string): Promise<{ content: string }> {
     ref: mainBranch,
   });
 
-  // Get the raw data, which can be either a file or a directory
+  // The raw union type returned by Octokit
   const data =
     response.data as RestEndpointMethodTypes["repos"]["getContent"]["response"]["data"];
 
-  // Narrow to the file case
-  if (Array.isArray(data) || typeof data.content !== "string") {
+  //  Narrow on `type === "file"` rather than checking `.content`
+  if (Array.isArray(data) || data.type !== "file") {
     throw new Error(
-      `Expected a file at ${filename}, but got a directory or missing content`
+      `Expected a file at ${filename}, but got a directory or invalid type`
     );
   }
 
-  // Decode and return
+  // Now TS knows `data` is the File type with `.content`
   const content = Buffer.from(data.content, "base64").toString("utf8");
   return { content };
 }
