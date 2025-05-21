@@ -4,6 +4,31 @@ This is a simple webservice to view, search, and edit your own markdown notes st
 
 This project is in a very WIP POC State, and is currently just a side project + a way to learn Next.JS. If this gets any traction, I have a lot of feature ideas, but for now this is meant to be simple, hacky, and free to setup.
 
+**Features**:
+
+- Search all markdown files
+- view notes
+- edit notes
+- simple password protection (single user)
+
+## Screenshots
+
+### Home page
+
+![](docs/images/screenshot_home.png "Home Page")
+
+### View a note
+
+![](docs/images/screenshot_view.png "View note")
+
+### Edit a note
+
+![](docs/images/screenshot_edit.png "Edit note")
+
+### Search a note
+
+![](docs/images/screenshot_search.png "Edit note")
+
 ## Setup
 
 Below are instructions on how deploy this to a free [Vercel](https://vercel.com/) account to privately view and edit your notes.
@@ -52,3 +77,7 @@ If you want to easily get future updates to this project, fork this project into
    ```
 
 5. Hit deploy
+
+If there are no errors, once the deployment is done, you should be able to go to dashboard > markdown-notes-web and find a url for your page.
+
+It will ask you a username and password, which you set above in the ENV variables
