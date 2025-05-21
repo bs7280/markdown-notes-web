@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Markdown Notes Web Service
 
-## Getting Started
+This is a simple webservice to view, search, and edit your own markdown notes stored in github. This is originally designed to work with my obsidian note collection, but it should work on any collection of markdown notes.
 
-First, run the development server:
+This project is in a very WIP POC State, and is currently just a side project + a way to learn Next.JS. If this gets any traction, I have a lot of feature ideas, but for now this is meant to be simple, hacky, and free to setup.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Setup
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Below are instructions on how deploy this to a free [Vercel](https://vercel.com/) account to privately view and edit your notes.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Step 0
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Your markdown notes must already be in github **In a seperate repo** . I use obsidian with the obsidian-git plugin to sync my notes from the obsidian desktop app to github.
 
-## Learn More
+This service will need to read and write to your note repo, which will require a Personal Access Token. If you are using obsidian-git you can reuse the same token, but I would recommend creating a new one
 
-To learn more about Next.js, take a look at the following resources:
+At the end of this you should have TWO repos:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. your note vault repo - where all the actual note content is saved
+2. a fork of this repo
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Step 1 - Fork this repo
 
-## Deploy on Vercel
+If you want to easily get future updates to this project, fork this project into your own github project.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+> [!NOTE]
+>
+> The reason for forking this project instead of using it directly -- vercel will clone a public repo into your account which makes it hard to get updates.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Step 2 - Create a personal access token
+
+[Create a Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token) for your **Note Vault Repo** with
+
+- Read/Write access to content
+- Read access to meta data
+
+### Step 2
+
+1. Create a new account on Vercel if you don't already have one, and connect your github account.
+2. `Add New > Project`
+3. Use `import git repository > markdown-notes-web`
+4. Add the following env variables (with your own values)
+   ```
+   GITHUB_TOKEN=github_pat_... # Secret value, keep this in a password manager
+   GITHUB_OWNER=<YOUR_GITHUB_USERNAME>
+   GITHUB_REPO=<YOUR MARKDOWN NOTE REPO NAME> # ex: note-vault
+   GITHUB_BRANCH=your_branch_name # your branch name ex: main
+   ```
+5. Hit deploy
