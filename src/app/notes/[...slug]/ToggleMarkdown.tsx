@@ -172,7 +172,13 @@ export default function ToggleMarkdown({ filename, content }: Props) {
       )}
 
       {mode === "raw" && (
-        <pre className="whitespace-pre-wrap font-mono bg-gray-100 dark:bg-gray-900 text-gray-800 p-4 rounded-md border overflow-x-auto max-w-full text-sm">
+        <pre
+          className="
+            whitespace-pre-wrap font-mono
+            bg-gray-50 text-gray-900 border border-gray-300
+            dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700
+            p-4 rounded-md overflow-x-auto max-w-full text-sm"
+        >
           {content}
         </pre>
       )}
@@ -182,7 +188,13 @@ export default function ToggleMarkdown({ filename, content }: Props) {
           <textarea
             value={editedContent}
             onChange={(e) => setEditedContent(e.target.value)}
-            className="w-full h-80 p-4 font-mono text-sm border rounded-md"
+            className="w-full
+              h-[80vh]            /* 80% of viewport height */
+              p-4
+              font-mono
+              text-sm
+              border rounded-md
+              resize-none         /* prevent manual resize if you like */ "
           />
           <div className="mt-4">
             <button
