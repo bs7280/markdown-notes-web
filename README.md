@@ -40,10 +40,15 @@ If you want to easily get future updates to this project, fork this project into
 2. `Add New > Project`
 3. Use `import git repository > markdown-notes-web`
 4. Add the following env variables (with your own values)
+
    ```
    GITHUB_TOKEN=github_pat_... # Secret value, keep this in a password manager
    GITHUB_OWNER=<YOUR_GITHUB_USERNAME>
    GITHUB_REPO=<YOUR MARKDOWN NOTE REPO NAME> # ex: note-vault
    GITHUB_BRANCH=your_branch_name # your branch name ex: main
+   BASIC_AUTH_USER=myusername
+   BASIC_AUTH_PASSWORD=my-super-strong-password
+
    ```
+
 5. Hit deploy
